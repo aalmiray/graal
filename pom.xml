@@ -103,6 +103,13 @@
                   <archiveType>tar.gz</archiveType>
                 </pkg>
                 <pkg>
+                  <name>graalvm22LinuxArm</name>
+                  <platform>linux-aarch64</platform>
+                  <version>${jdk.version}</version>
+                  <distribution>graalvm_ce17</distribution>
+                  <archiveType>tar.gz</archiveType>
+                </pkg>
+                <pkg>
                   <name>graalvm22OsxIntel</name>
                   <platform>osx-x86_64</platform>
                   <version>${jdk.version}</version>

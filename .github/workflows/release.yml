@@ -41,7 +41,7 @@ jobs:
 
   assemble:
     needs: [ precheck ]
-    uses: jreleaser/helloworld-java-graalvm/.github/workflows/reusable-assemble.yml@main
+    uses: aalmiray/graal/.github/workflows/reusable-assemble.yml@main
     with:
       project-version: ${{ needs.precheck.outputs.VERSION }}
 

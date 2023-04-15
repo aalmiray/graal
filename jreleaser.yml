@@ -4,6 +4,10 @@ environment:
     graalFilePrefix: graalvm-ce-java17-22.3.0
     artifactsDir: out/jreleaser/assemble/helloworld/native-image
 
+platform:
+  replacements:
+    aarch_64: arm64
+
 project:
   name: helloworld
   description: HelloWorld in Java
@@ -40,6 +44,8 @@ assemble:
       graalJdks:
         - path: '{{jdkPathPrefix}}/graalvm22OsxIntel/{{graalFilePrefix}}/Contents/Home'
           platform: 'osx-x86_64'
+        - path: '{{jdkPathPrefix}}/graalvm22LinuxArm/{{graalFilePrefix}}'
+          platform: 'linux-aarch_64'
         - path: '{{jdkPathPrefix}}/graalvm22LinuxIntel/{{graalFilePrefix}}'
           platform: 'linux-x86_64'
         - path: '{{jdkPathPrefix}}/graalvm22WindowsIntel/{{graalFilePrefix}}'

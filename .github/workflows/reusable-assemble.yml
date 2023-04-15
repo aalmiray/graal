@@ -75,7 +75,65 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: jreleaser-release
+          name: jreleaser-assemble-${{ matrix.os }}
+          path: |
+            out/jreleaser/trace.log
+            out/jreleaser/output.properties
+
+      - name: Upload jpackage
+        uses: actions/upload-artifact@v3
+        with:
+          retention-days: 1
+          path: |
+            out/jreleaser/assemble/helloworld/native-image/*.zip
+
+  assemble-arm:
+    name: 'Assemble linux-arm64'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ inputs.java-version }}
+          distribution: ${{ inputs.java-distro }}
+          cache: maven
+
+      - name: Setup JDKs
+        run: ./mvnw -ntp -B -q -Pjdks
+
+      - name: Build
+        run: ./mvnw -ntp -B verify
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: ${{ matrix.arch }}
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          install: true
+
+      - name: Setup JReleaser
+        run: |
+          curl -sL https://git.io/get-jreleaser > get_jreleaser.java
+          java get_jreleaser.java
+
+      - name: Assemble
+        run: |
+          docker run --platform linux/arm64 --rm --volume ${{ github.workspace }}:/workspace --workdir /workspace -e JRELEASER_PROJECT_VERSION=${{ inputs.project-version }} -e JRELEASER_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} ghcr.io/graalvm/graalvm-ce:22.3.0 /bin/sh -c "java -jar jreleaser-cli.jar assemble"
+
+      - name: JReleaser output
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: jreleaser-assemble-linux-arm64
           path: |
             out/jreleaser/trace.log
             out/jreleaser/output.properties

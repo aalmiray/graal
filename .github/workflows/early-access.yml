@@ -10,7 +10,7 @@ env:
 
 jobs:
   precheck:
-    if: github.repository == 'jreleaser/helloworld-java-graalvm' && startsWith(github.event.head_commit.message, 'Releasing version') != true
+    if: github.repository == 'aalmiray/graal' && startsWith(github.event.head_commit.message, 'Releasing version') != true
     runs-on: ubuntu-latest
     outputs:
       VERSION: ${{ steps.vars.outputs.VERSION }}
@@ -40,7 +40,7 @@ jobs:
   assemble:
     needs: [ precheck ]
     if: endsWith(${{ needs.precheck.outputs.VERSION }}, '-SNAPSHOT')
-    uses: jreleaser/helloworld-java-graalvm/.github/workflows/reusable-assemble.yml@main
+    uses: aalmiray/graal/.github/workflows/reusable-assemble.yml@main
     with:
       project-version: ${{ needs.precheck.outputs.VERSION }}
 
